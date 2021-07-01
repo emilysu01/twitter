@@ -6,16 +6,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,12 +33,14 @@ public class TimelineActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 20;
 
     private SwipeRefreshLayout swipeContainer;
+    MenuItem miActionProgressItem;
 
     TwitterClient client;
     RecyclerView rvTweets;
     List<Tweet> tweets;
     TweetsAdapter adapter;
-    Button btnLogout;
+    // Button btnLogout;
+    FloatingActionButton btnCompose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +51,34 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Find the RecyclerView
         rvTweets = findViewById(R.id.rvTweets);
+
         // Initialize the list of Tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
         // Configure the RecyclerView (layout and adapter)
-        rvTweets.setLayoutManager(new LinearLayoutManager((this)));
+        LinearLayoutManager layoutManager = new LinearLayoutManager((this));
+        rvTweets.setLayoutManager(layoutManager);
         rvTweets.setAdapter(adapter);
 
-        btnLogout = findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvTweets.getContext(),
+                layoutManager.getOrientation());
+        rvTweets.addItemDecoration(dividerItemDecoration);
+
+        // btnLogout = findViewById(R.id.btnLogout);
+        /** btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 client.clearAccessToken();
                 finish();
+            }
+        }); **/
+        btnCompose = findViewById(R.id.btnCompose);
+        btnCompose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class);
+                intent.putExtra("previousActivity", "TimelineActivity");
+                startActivity(intent);
             }
         });
         populateHomeTimeline();
@@ -124,6 +142,7 @@ public class TimelineActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
@@ -132,6 +151,16 @@ public class TimelineActivity extends AppCompatActivity {
             // Navigate the compose activity
             Intent intent = new Intent(this, ComposeActivity.class);
             startActivityForResult(intent, REQUEST_CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    } **/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.miLogout) {
+            client.clearAccessToken();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -176,5 +205,23 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure " + response, throwable);
             }
         });
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
     }
 }

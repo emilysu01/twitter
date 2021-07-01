@@ -5,7 +5,6 @@ import android.content.Context;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.codepath.oauth.OAuthBaseClient;
-import com.github.scribejava.apis.FlickrApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 
@@ -59,6 +58,41 @@ public class TwitterClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
 		params.put("status", tweetContent);
+		client.post(apiUrl, params, "", handler);
+	}
+
+	public void likeTweet(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("favorites/create.json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
+		client.post(apiUrl, params, "", handler);
+	}
+
+	public void unlikeTweet(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("favorites/destroy.json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
+		client.post(apiUrl, params, "", handler);
+	}
+
+	public void getUserFollowing(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("friends/list.json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
+		client.get(apiUrl, params, handler);
+	}
+
+	public void retweet(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/retweet/" + tweetId + ".json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
+		client.post(apiUrl, params, "", handler);
+	}
+
+	public void unretweet(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/unretweet/" + tweetId + ".json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
 		client.post(apiUrl, params, "", handler);
 	}
 

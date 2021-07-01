@@ -22,11 +22,17 @@
                 android:layout_marginTop="2dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <Button
-        android:id="@+id/btnLogout"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCompose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:text="Log Out" />
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/twitter_blue"
+        app:srcCompat="@drawable/vector_compose_fab" />
 </RelativeLayout>
