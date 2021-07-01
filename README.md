@@ -61,9 +61,9 @@ Challenges:
 - Ran into issues with API call endpoints (all Twitter API call endpoints include .json)
 
 Resources referenced:
-- [Navigating back to a previous screen] (https://stackoverflow.com/questions/4038479/android-go-back-to-previous-activity)
-- [Adding dividers between RecyclerView items] (https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview#:~:text=Unlike%20ListView%20%2C%20the%20RecyclerView%20class,from%20the%20adapter's%20data%20set)
-- [Add rounded corners to buttons] (https://stackoverflow.com/questions/6054562/how-to-make-the-corners-of-a-button-round)
+- [Navigating back to a previous screen](https://stackoverflow.com/questions/4038479/android-go-back-to-previous-activity)
+- [Adding dividers between RecyclerView items](https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview#:~:text=Unlike%20ListView%20%2C%20the%20RecyclerView%20class,from%20the%20adapter's%20data%20set)
+- [Add rounded corners to buttons](https://stackoverflow.com/questions/6054562/how-to-make-the-corners-of-a-button-round)
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
