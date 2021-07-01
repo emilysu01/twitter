@@ -53,5 +53,14 @@ public class UserActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        tvFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FollowersActivity.class);
+                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
+                startActivity(intent);
+            }
+        });
     }
 }

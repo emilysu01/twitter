@@ -28,6 +28,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = BuildConfig.CONSUMER_KEY;
 	public static final String REST_CONSUMER_SECRET = BuildConfig.CONSUMER_SECRET;
 
+	public int max_id;
 	// Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
 	public static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
 
@@ -77,6 +78,13 @@ public class TwitterClient extends OAuthBaseClient {
 
 	public void getUserFollowing(String tweetId, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("friends/list.json");
+		RequestParams params = new RequestParams();
+		params.put("id", tweetId);
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getUserFollowers(String tweetId, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("followers/list.json");
 		RequestParams params = new RequestParams();
 		params.put("id", tweetId);
 		client.get(apiUrl, params, handler);

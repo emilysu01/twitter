@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.parceler.Parcels;
@@ -67,10 +68,43 @@ public class DetailActivity extends AppCompatActivity {
         tvBody.setText(tweet.getBody());
         Glide.with(getApplicationContext())
                 .load(tweet.getUser().getProfileImageUrl())
+                .circleCrop()
                 .into(ivProfileImage);
         Glide.with(getApplicationContext())
                 .load(tweet.getMediaUrl())
                 .into(ivPostImage);
+
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User user = tweet.getUser();
+                Intent intent = new Intent(DetailActivity.this, UserActivity.class);
+                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
+                startActivity(intent);
+            }
+        });
+
+        tvScreenName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User user = tweet.getUser();
+                Intent intent = new Intent(DetailActivity.this, UserActivity.class);
+                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
+                startActivity(intent);
+            }
+        });
+
+        ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User user = tweet.getUser();
+                Intent intent = new Intent(DetailActivity.this, UserActivity.class);
+                intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
+                startActivity(intent);
+            }
+        });
+
+
 
         ivRetweet.setOnClickListener(new View.OnClickListener() {
             @Override

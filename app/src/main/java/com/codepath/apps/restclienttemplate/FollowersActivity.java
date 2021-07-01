@@ -21,7 +21,7 @@ import java.util.List;
 
 import okhttp3.Headers;
 
-public class FollowingActivity extends AppCompatActivity {
+public class FollowersActivity extends AppCompatActivity {
 
     User user;
     TwitterClient client;
@@ -29,13 +29,13 @@ public class FollowingActivity extends AppCompatActivity {
     List<User> users;
     UsersAdapter adapter;
 
-    public static final String TAG = "FollowingActivity";
+    public static final String TAG = "FollowersActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_following);
+        setContentView(R.layout.activity_followers);
 
         client = TwitterApp.getRestClient(this);
 
@@ -60,7 +60,7 @@ public class FollowingActivity extends AppCompatActivity {
     }
 
     private void populateUsers() {
-        client.getUserFollowing(user.getId(), new JsonHttpResponseHandler() {
+        client.getUserFollowers(user.getId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess " + json.toString());

@@ -62,8 +62,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
-            tvScreenName = itemView.findViewById(R.id.tvName);
-            tvName = itemView.findViewById(R.id.tvScreenName);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvName = itemView.findViewById(R.id.tvName);
             tvBio = itemView.findViewById(R.id.tvBio);
         }
 
@@ -80,10 +80,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         public void bind(User user) {
             tvName.setText(user.getName());
-            tvScreenName.setText(user.getScreenName());
+            tvScreenName.setText("@" + user.getScreenName());
             tvBio.setText(user.getBio());
             Glide.with(context)
                     .load(user.getProfileImageUrl())
+                    .circleCrop()
                     .into(ivProfileImage);
         }
     }

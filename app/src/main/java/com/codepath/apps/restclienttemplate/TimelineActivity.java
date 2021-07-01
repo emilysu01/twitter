@@ -32,6 +32,8 @@ public class TimelineActivity extends AppCompatActivity {
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
 
+    public int lowestMaxId;
+
     private SwipeRefreshLayout swipeContainer;
     MenuItem miActionProgressItem;
 
@@ -41,6 +43,7 @@ public class TimelineActivity extends AppCompatActivity {
     TweetsAdapter adapter;
     // Button btnLogout;
     FloatingActionButton btnCompose;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,15 @@ public class TimelineActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager((this));
         rvTweets.setLayoutManager(layoutManager);
         rvTweets.setAdapter(adapter);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        rvTweets.addOnScrollListener(scrollListener);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvTweets.getContext(),
                 layoutManager.getOrientation());
@@ -100,6 +112,38 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+    }
+
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+
+
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.i("TimelineActivity", "onSuccess");
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    int prevLen = tweets.size();
+                    tweets.addAll(0, Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyItemRangeInserted(0, tweets.size() - prevLen);
+                    Log.i("NEW TWEETS", Integer.toString(tweets.size() - prevLen));
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSON exception", e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("DEBUG", "Fetch timeline error: " + response);
+            }
+        });
 
     }
 
@@ -174,6 +218,12 @@ public class TimelineActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             // Get data from the intent (Tweet object_
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            if (lowestMaxId == 0) {
+                lowestMaxId = Integer.parseInt(tweet.getId());
+            }
+            if (Integer.parseInt(tweet.getId()) < lowestMaxId) {
+                lowestMaxId = Integer.parseInt(tweet.getId());
+            }
             // Update the recyclerView with the Tweet
             // Modify data source of tweets
             tweets.add(0, tweet);
