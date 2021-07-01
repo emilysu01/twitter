@@ -14,31 +14,34 @@ public class User {
     public String id;
     public String name;
     public String screenName;
-    public String location;
-    public String bio;
     public String profileImageUrl;
+    public String bio;
     public int following;
     public int followers;
-    // public List<User> followingPpl;
-    // public List<User> followerPpl;
+    public String location;
 
     // Empty constructor needed by the Parceler library
     public User() {
 
     }
     public static User fromJson(JSONObject jsonObject) throws JSONException {
+        // Construct new User object
         User user = new User();
+
+        // Fill in attributes of new User object
         user.id = jsonObject.getString("id_str");
         user.name = jsonObject.getString("name");
         user.screenName = jsonObject.getString("screen_name");
         user.profileImageUrl = jsonObject.getString("profile_image_url_https");
-        user.location = jsonObject.getString("location");
         user.bio = jsonObject.getString("description");
         user.followers = jsonObject.getInt("followers_count");
         user.following = jsonObject.getInt("friends_count");
+        user.location = jsonObject.getString("location");
+
         return user;
     }
 
+    // Convert a JSON array into a list of User objects
     public static List<User> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<User> users = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i += 1) {
@@ -47,32 +50,21 @@ public class User {
         return users;
     }
 
-    public String getName() {
-        return name;
+    // Getter methods
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
     public String getScreenName() {
         return screenName;
     }
 
-    public void setScreenName(String screenName) {
-        this.screenName = screenName;
-    }
-
     public String getProfileImageUrl() {
         return profileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public String getBio() {
@@ -87,7 +79,8 @@ public class User {
         return followers;
     }
 
-    public String getId() {
-        return id;
+    public String getLocation() {
+        return location;
     }
+
 }

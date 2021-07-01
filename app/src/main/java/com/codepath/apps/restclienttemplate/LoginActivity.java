@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 
 import com.codepath.apps.restclienttemplate.models.SampleModel;
 import com.codepath.apps.restclienttemplate.models.SampleModelDao;
@@ -14,6 +15,9 @@ import com.codepath.oauth.OAuthLoginActionBarActivity;
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
 	SampleModelDao sampleModelDao;
+
+	//
+	Button btnLogin;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,8 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 				sampleModelDao.insertModel(sampleModel);
 			}
 		});
+
+		btnLogin = findViewById(R.id.btnLogin);
 	}
 
 
@@ -46,8 +52,9 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	@Override
 	public void onLoginSuccess() {
 		Log.i("logtag", "login success");
-		Intent i = new Intent(this, TimelineActivity.class);
-		startActivity(i);
+		Intent intent = new Intent(this, TimelineActivity.class);
+		// intent.putExtra("previousActivity", user);
+		startActivity(intent);
 	}
 
 	// OAuth authentication flow failed, handle the error
@@ -65,13 +72,3 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	}
 
 }
-
-/*
-RestClient client = RestApplication.getRestClient();
-client.getHomeTimeline(1, new JsonHttpResponseHandler() {
-    @Override
-    public void onSuccess(int statusCode, Headers headers, JSON json) {
-    // json.jsonArray.getJSONObject(0).getLong("id");
-  }
-});
-*/

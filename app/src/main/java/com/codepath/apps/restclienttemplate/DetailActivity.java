@@ -31,7 +31,6 @@ public class DetailActivity extends AppCompatActivity {
     ImageView ivComment;
     ImageView ivRetweet;
     ImageView ivLike;
-    // ImageView ivShare;
 
     TwitterClient client;
 
@@ -48,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
         Log.i("current tweet", tweet.toString());
 
         ivProfileImage = (ImageView) findViewById(R.id.ivProfileImage);
-        tvBody = (TextView) findViewById(R.id.tvBody);
+        tvBody = (TextView) findViewById(R.id.tvFollowing);
         tvName = (TextView) findViewById(R.id.tvName);
         tvScreenName = (TextView) findViewById(R.id.tvScreenName);
         ivPostImage = (ImageView) findViewById(R.id.ivPostImage);

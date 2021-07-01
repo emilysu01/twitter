@@ -24,14 +24,13 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     Context context;
     List<User> users;
 
-    public int limit;
-
+    // Pass in the context and list of Users
     public UsersAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
-        limit = users.size();
     }
 
+    // For each row, inflate the layout
     @NonNull
     @NotNull
     @Override
@@ -40,6 +39,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         return new UsersAdapter.ViewHolder(view);
     }
 
+    // Bind values based on the position of the element
     @Override
     public void onBindViewHolder(@NonNull @NotNull UsersAdapter.ViewHolder holder, int position) {
         User user = users.get(position);
@@ -54,13 +54,16 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView ivProfileImage;
+        // UI components
         TextView tvName;
         TextView tvScreenName;
         TextView tvBio;
+        ImageView ivProfileImage;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+
+            // Retrieve UI components
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvName = itemView.findViewById(R.id.tvName);
@@ -79,9 +82,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         }
 
         public void bind(User user) {
+            // Set text for UI components
             tvName.setText(user.getName());
             tvScreenName.setText("@" + user.getScreenName());
             tvBio.setText(user.getBio());
+            // Generate profile image
             Glide.with(context)
                     .load(user.getProfileImageUrl())
                     .circleCrop()

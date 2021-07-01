@@ -61,107 +61,53 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     // Define a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        // Constants
+        private static final int SECOND_MILLIS = 1000;
+        private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+        private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+        private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
+        // UI components
+        TextView tvName;
+        TextView tvScreenName;
         ImageView ivProfileImage;
         TextView tvBody;
-        TextView tvScreenName;
-        ImageView ivPostImage;
-        TextView tvName;
         TextView tvTime;
+        ImageView ivPostImage;
 
-        // itemView is a representation of one view in the RecyclerView
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
-            tvBody = itemView.findViewById(R.id.tvBody);
-            tvScreenName = itemView.findViewById(R.id.tvName);
-            ivPostImage = itemView.findViewById(R.id.ivPostImage);
+
+            // Retrieve UI components
             tvName = itemView.findViewById(R.id.tvScreenName);
+            tvScreenName = itemView.findViewById(R.id.tvName);
+            ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            tvBody = itemView.findViewById(R.id.tvFollowing);
             tvTime = itemView.findViewById(R.id.tvTime);
+            ivPostImage = itemView.findViewById(R.id.ivPostImage);
 
-            ivProfileImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        User user = tweets.get(position).getUser();
-                        Intent intent = new Intent(context, UserActivity.class);
-                        intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
-                        context.startActivity(intent);
-                    }
-                }
-            });
+            // Set up onClickListeners for UI components
+            setUpUIComponents();
+        }
 
-            tvScreenName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        User user = tweets.get(position).getUser();
-                        Intent intent = new Intent(context, UserActivity.class);
-                        intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
-                        context.startActivity(intent);
-                    }
-                }
-            });
-
-            tvName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        User user = tweets.get(position).getUser();
-                        Intent intent = new Intent(context, UserActivity.class);
-                        intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
-                        context.startActivity(intent);
-                    }
-                }
-            });
-
-            tvBody.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Tweet tweet = tweets.get(position);
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                        context.startActivity(intent);
-                    }
-                }
-            });
-
-            ivPostImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Tweet tweet = tweets.get(position);
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                        context.startActivity(intent);
-                    }
-                }
-            });
-
-            tvTime.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Tweet tweet = tweets.get(position);
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                        context.startActivity(intent);
-                    }
-                }
-            });
+        public void setUpUIComponents() {
+            // Set up onClickListeners for UI components that lead to a profile page
+            tvName.setOnClickListener(new ProfileClickListener());
+            tvScreenName.setOnClickListener(new ProfileClickListener());
+            ivProfileImage.setOnClickListener(new ProfileClickListener());
+            // Set up onClickListeners for UI components that lead to a Tweet page
+            tvBody.setOnClickListener(new TweetClickListener());
+            tvTime.setOnClickListener(new TweetClickListener());
+            ivPostImage.setOnClickListener(new TweetClickListener());
         }
 
         public void bind(Tweet tweet) {
-            tvBody.setText(tweet.body);
-            tvScreenName.setText("@" + tweet.user.screenName);
+            // Set TextView components text
             tvName.setText(tweet.user.getName());
+            tvScreenName.setText("@" + tweet.user.screenName);
+            tvBody.setText(tweet.body);
             tvTime.setText("• " + getRelativeTimeAgo(tweet.createdAt));
+            // Generate profile image and post image
             Glide.with(context)
                     .load(tweet.user.profileImageUrl)
                     .circleCrop()
@@ -173,20 +119,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             }
         }
 
-        private static final int SECOND_MILLIS = 1000;
-        private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
-        private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
-        private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
-
+        // Generate relative time for Tweets (e.g.: Tweet was made 1 min ago)
         public String getRelativeTimeAgo(String rawJsonDate) {
             String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
             SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
             sf.setLenient(true);
-
             try {
                 long time = sf.parse(rawJsonDate).getTime();
                 long now = System.currentTimeMillis();
-
                 final long diff = now - time;
                 if (diff < MINUTE_MILLIS) {
                     return "just now";
@@ -207,19 +147,46 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 Log.i("TweetsAdapter", "getRelativeTimeAgo failed");
                 e.printStackTrace();
             }
-
             return "";
         }
 
         @Override
         public void onClick(View v) {
+            // Get the location of click
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                // Get the Movie at position in the list
+                // Get the Tweet at position in the list
                 Tweet tweet = tweets.get(position);
+                // Change activity to Tweet detail activity
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
                 context.startActivity(intent);
+            }
+        }
+
+        private class ProfileClickListener implements View.OnClickListener {
+            @Override
+            public void onClick(View view) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    User user = tweets.get(position).getUser();
+                    Intent intent = new Intent(context, UserActivity.class);
+                    intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
+                    context.startActivity(intent);
+                }
+            }
+        }
+
+        private class TweetClickListener implements View.OnClickListener {
+            @Override
+            public void onClick(View view) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Tweet tweet = tweets.get(position);
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                    context.startActivity(intent);
+                }
             }
         }
     }
@@ -230,7 +197,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    // Add a list of items -- change to type used
+    // Add a list of items
     public void addAll(List<Tweet> list) {
         tweets.addAll(list);
         notifyDataSetChanged();

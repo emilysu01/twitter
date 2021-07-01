@@ -13,14 +13,13 @@ import java.util.List;
 @Parcel
 public class Tweet {
 
-    public String body;
-    public String createdAt;
-    public User user;
-    public String mediaUrl;
     public String id;
+    public User user;
+    public String body;
+    public String mediaUrl;
+    public String createdAt;
     public boolean liked;
     public boolean retweeted;
-    // public Entity entity;
 
     // Empty constructor needed by the Parceler library
     public Tweet() {
@@ -28,17 +27,18 @@ public class Tweet {
     }
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
+        // Construct new Tweet object
         Tweet tweet = new Tweet();
-        tweet.body = jsonObject.getString("text");
-        tweet.createdAt = jsonObject.getString("created_at");
-        tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
-        JSONObject entities = jsonObject.getJSONObject("entities");
+
+        // Fill in attributes of new Tweet object
         tweet.id = jsonObject.getString("id_str");
-        if (jsonObject.getString("favorited").equals("true")) {
-            tweet.liked = true;
+        tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        if(jsonObject.has("full_text")) {
+            tweet.body = jsonObject.getString("full_text");
         } else {
-            tweet.liked = false;
+            tweet.body = jsonObject.getString("text");
         }
+        JSONObject entities = jsonObject.getJSONObject("entities");
         if (entities != null && entities.has("media")) {
             JSONArray media = entities.getJSONArray("media");
             tweet.mediaUrl = media.getJSONObject(0).getString("media_url_https");
@@ -46,11 +46,19 @@ public class Tweet {
         } else {
             tweet.mediaUrl = null;
         }
+        tweet.createdAt = jsonObject.getString("created_at");
+        // Favorited is given as a string by the Twitter API
+        if (jsonObject.getString("favorited").equals("true")) {
+            tweet.liked = true;
+        } else {
+            tweet.liked = false;
+        }
         tweet.retweeted = jsonObject.getBoolean("retweeted");
-        // tweet.entity = Entity.fromJson(jsonObject.getJSONObject("entities"));
+
         return tweet;
     }
 
+    // Convert a JSON array into a list of Tweet objects
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i += 1) {
@@ -59,40 +67,25 @@ public class Tweet {
         return tweets;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    // Getter and setter methods
+    public String getId() {
+        return id;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getBody() {
+        return body;
     }
 
     public String getMediaUrl() {
         return mediaUrl;
     }
 
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
-    }
-
-    public String getId() {
-        return id;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
     public boolean isLiked() {
@@ -110,4 +103,5 @@ public class Tweet {
     public void setRetweeted() {
         retweeted = !retweeted;
     }
+
 }

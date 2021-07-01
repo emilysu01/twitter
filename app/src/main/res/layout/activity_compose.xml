@@ -9,32 +9,50 @@
     app:counterEnabled="true"
     app:counterMaxLength="10">
 
+    <ImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/btnCancel"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/btnTweet"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_below="@id/btnCancel"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:text="@string/tweet" />
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/tweet_btn"
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp"
+        android:text="@string/tweet"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
         android:text="Cancel" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnTweet"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
         app:counterEnabled="true"
         app:counterMaxLength="280">
 

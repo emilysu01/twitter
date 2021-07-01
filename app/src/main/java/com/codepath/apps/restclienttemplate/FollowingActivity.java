@@ -23,62 +23,70 @@ import okhttp3.Headers;
 
 public class FollowingActivity extends AppCompatActivity {
 
-    User user;
+    // Constants
+    public static final String TAG = "FollowingActivity";
+
     TwitterClient client;
-    RecyclerView rvUsers;
-    List<User> users;
+
+    List<User> users = new ArrayList<>();
     UsersAdapter adapter;
 
-    public static final String TAG = "FollowingActivity";
+    User user;
+
+    // UI components
+    RecyclerView rvUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_following);
 
+        // Set up API client object
         client = TwitterApp.getRestClient(this);
 
+        // Unwrap user from previous activity intent
         user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
 
-        // Find the RecyclerView
-        rvUsers = findViewById(R.id.rvUsers);
-        // Initialize the list of Tweets and adapter
-        users = new ArrayList<>();
+        // Retrieve UI components
+        rvUsers = findViewById(R.id.rvTweets);
+
+        // Initialize list adapter
         adapter = new UsersAdapter(this, users);
-        // Configure the RecyclerView (layout and adapter)
+
+        // Configure RecyclerView (layout, adapter, and dividers)
         LinearLayoutManager layoutManager = new LinearLayoutManager((this));
         rvUsers.setLayoutManager(layoutManager);
         rvUsers.setAdapter(adapter);
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvUsers.getContext(),
                 layoutManager.getOrientation());
         rvUsers.addItemDecoration(dividerItemDecoration);
 
+        // Displays users
         populateUsers();
-
     }
 
     private void populateUsers() {
+        // Retrieve current user's following
         client.getUserFollowing(user.getId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess " + json.toString());
                 JSONObject jsonObject = json.jsonObject;
                 try {
+                    // Unpack JSON object (get JSON array corresponding to key users)
                     JSONArray allFollowing = jsonObject.getJSONArray("users");
-                    Log.i(TAG, "IMPORTANT " + allFollowing.toString());
+                    // Add to list of users to display
                     users.addAll(User.fromJsonArray(allFollowing));
+                    // Notify adapter
                     adapter.notifyDataSetChanged();
+                    Log.i(TAG, "onSuccess to retrieve current user's following");
                 } catch (JSONException e) {
-                    Log.e(TAG, "JSON exception", e);
+                    Log.e(TAG, "JSONException: ", e);
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure " + response, throwable);
+                Log.e(TAG, "onFailure to retieve current user's following: " + response, throwable);
             }
         });
     }

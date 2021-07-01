@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".FollowersActivity">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUsers"
+        android:id="@+id/rvTweets"
         android:layout_width="409dp"
         android:layout_height="729dp"
         tools:layout_editor_absoluteX="1dp"
