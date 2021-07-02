@@ -66,9 +66,9 @@ Resources referenced:
 - [Adding dividers between RecyclerView items](https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview#:~:text=Unlike%20ListView%20%2C%20the%20RecyclerView%20class,from%20the%20adapter's%20data%20set)
 - [Add rounded corners to buttons](https://stackoverflow.com/questions/6054562/how-to-make-the-corners-of-a-button-round)
 
-Comment icon credit:
+Reply icon credit:
 - [Freepik](https://www.freepik.com)
-- [Flaticon](https://www.flaticon.com/
+- [Flaticon](https://www.flaticon.com/)
 
 ## Open-source libraries used
 
