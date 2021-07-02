@@ -57,7 +57,7 @@ Learned:
 - Learned how to read documentation for different APIs
 
 Challenges:
-- Wanted to display the user's profile picture on the compose Tweet screen but had no reference to a User object anywhere in the app at that point (no references to User objects are made in the login and timeline screens) - used an API call to retrieve the current user logged in and parsed it into a User object
+- Wanted to display the user's profile picture on the compose Tweet screen but had no reference to a User object anywhere in the app at that point (no references to User objects are made in the login and timeline screens) - found an API call to retrieve the current user logged in and parsed it into a User object
 - Ran into issues with API call endpoints (all Twitter API call endpoints include .json)
 - Had a misunderstanding of max_id and infinite scrolling in a RecyclerView (was able to ask a TA to clarify)
 
@@ -65,6 +65,11 @@ Resources referenced:
 - [Navigating back to a previous screen](https://stackoverflow.com/questions/4038479/android-go-back-to-previous-activity)
 - [Adding dividers between RecyclerView items](https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview#:~:text=Unlike%20ListView%20%2C%20the%20RecyclerView%20class,from%20the%20adapter's%20data%20set)
 - [Add rounded corners to buttons](https://stackoverflow.com/questions/6054562/how-to-make-the-corners-of-a-button-round)
+
+Comment icon credit:
+- [Freepik](https://www.freepik.com)
+- [Flaticon](https://www.flaticon.com/
+
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
