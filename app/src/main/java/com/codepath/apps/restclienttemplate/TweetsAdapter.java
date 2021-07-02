@@ -38,7 +38,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
-
         client = TwitterApp.getRestClient(context);
     }
 
@@ -69,23 +68,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Constants
+        public static final String TAG = "TweetsAdapter";
+        // Constants for parsing reltive time
         private static final int SECOND_MILLIS = 1000;
         private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
         private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
         private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
-        public static final String TAG = "TweetsAdapter";
-
         // UI components
-        TextView tvName;
-        TextView tvScreenName;
-        ImageView ivProfileImage;
-        TextView tvBody;
-        TextView tvTime;
-        ImageView ivPostImage;
-        ImageView ivComment;
-        ImageView ivRetweet;
-        ImageView ivLike;
+        public TextView tvName;
+        public TextView tvScreenName;
+        public ImageView ivProfileImage;
+        public TextView tvBody;
+        public TextView tvTime;
+        public ImageView ivPostImage;
+        public ImageView ivComment;
+        public ImageView ivRetweet;
+        public ImageView ivLike;
+
+        public Tweet tweet;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -100,9 +101,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivComment = itemView.findViewById(R.id.ivComment);
             ivRetweet = itemView.findViewById(R.id.ivRetweet);
             ivLike = itemView.findViewById(R.id.ivLike);
-
-            // Set up onClickListeners for UI components
-            setUpUIComponents();
         }
 
         public void setUpUIComponents() {
@@ -115,7 +113,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvTime.setOnClickListener(new TweetClickListener());
             ivPostImage.setOnClickListener(new TweetClickListener());
             // Set up onClickListeners for comment, retweet and like
-
+            setOnClickListeners();
         }
 
         public void bind(Tweet tweet) {
@@ -137,7 +135,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             } else {
                 ivPostImage.setVisibility(View.GONE);
             }
-            setOnClickListeners();
+            // Set up onClickListeners for UI components
+            setUpUIComponents();
         }
 
         // Generate relative time for Tweets (e.g.: Tweet was made 1 min ago)
@@ -176,21 +175,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             // Get the location of click
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                // Get the Tweet at position in the list
+                // Get the Tweet that was clicked
                 Tweet tweet = tweets.get(position);
-                // Change activity to Tweet detail activity
+                // Create intent to pass activity to detail activity
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
                 context.startActivity(intent);
             }
         }
 
+        // onClickListener for transitioning to user pages
         private class ProfileClickListener implements View.OnClickListener {
             @Override
             public void onClick(View view) {
+                // Get the location of click
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    // Get the user that was clicked
                     User user = tweets.get(position).getUser();
+                    // Create intent to pass activity to user activity
                     Intent intent = new Intent(context, UserActivity.class);
                     intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                     context.startActivity(intent);
@@ -198,118 +201,132 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             }
         }
 
+        // onClickListener for transitioning to Tweet pages
         private class TweetClickListener implements View.OnClickListener {
             @Override
             public void onClick(View view) {
+                // Get the location of click
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    // Get the Tweet that was clicked
                     Tweet tweet = tweets.get(position);
+                    // Create intent to pass activity to detail activity
                     Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
                     context.startActivity(intent);
                 }
             }
         }
-        public Tweet tweet;
-        private void setOnClickListeners() {
 
+        private void setOnClickListeners() {
+            // Get the location of click
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
+                // Get the Tweet that was clicked
                 tweet = tweets.get(position);
+                // Reply to a tWEET
+                ivComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Create intent to pass the Tweet being replied to
+                        Intent intent = new Intent(context, ComposeActivity.class);
+                        intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                        // Send previous activity so compose activity knows whether or not to show a username
+                        intent.putExtra("previousActivity", "DetailActivity");
+                        context.startActivity(intent);
+                    }
+                });
+                // Retweet or unretweet a Tweet
                 ivRetweet.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!tweet.isRetweeted()) {
+                            // Retweet
                             client.retweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Headers headers, JSON json) {
                                     Log.i(TAG, "onSuccess to retweet");
+                                    // Update retweet icon to be bolded
                                     ivRetweet.setImageResource(R.drawable.ic_vector_retweet);
+                                    // Set the retweeted attribute to be true
                                     tweet.setRetweeted();
                                 }
-
                                 @Override
                                 public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
+                                    Log.e(TAG, "onFailure to retweet: " + response, throwable);
                                 }
                             });
                         } else {
+                            // Unretweet
                             client.unretweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Headers headers, JSON json) {
                                     Log.i(TAG, "onSuccess to unretweet");
+                                    // Update retweet icon to be unbolded
                                     ivRetweet.setImageResource(R.drawable.ic_vector_retweet_stroke);
+                                    // Set the retweeted attribute to be false
                                     tweet.setRetweeted();
                                 }
-
                                 @Override
                                 public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                                    Log.e(TAG, "onFailure to unretweet", throwable);
+                                    Log.e(TAG, "onFailure to unretweet: " + response, throwable);
                                 }
                             });
                         }
-
                     }
                 });
+                // Like or unlike a Tweet
                 ivLike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (tweet.isLiked()) {
-                            client.unlikeTweet(tweet.getId() + "", new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                    Log.i(TAG, "onSuccess to unlike Tweet");
-                                    ivLike.setImageResource(R.drawable.ic_vector_heart_stroke);
-                                    tweet.setLiked();
-                                }
-
-                                @Override
-                                public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                                    Log.e(TAG, "onFailure to unlike Tweet", throwable);
-                                }
-                            });
-                        } else {
+                        if (!tweet.isLiked()) {
+                            // Like
                             client.likeTweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                    Log.i(TAG, "onSuccess to like Tweet");
+                                    Log.i(TAG, "onSuccess to like");
+                                    // Update heart icon to be filled
                                     ivLike.setImageResource(R.drawable.ic_vector_heart);
+                                    // Set the liked attribute to be true
                                     tweet.setLiked();
                                 }
-
                                 @Override
                                 public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                                    Log.e(TAG, "onFailure to like Tweet", throwable);
+                                    Log.e(TAG, "onFailure to like: " + response, throwable);
+                                }
+                            });
+                        } else {
+                            // Unlike
+                            client.unlikeTweet(tweet.getId() + "", new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                    Log.i(TAG, "onSuccess to unlike");
+                                    // Update heart icon to be empty
+                                    ivLike.setImageResource(R.drawable.ic_vector_heart_stroke);
+                                    // Set the liked attribute to be false
+                                    tweet.setLiked();
+                                }
+                                @Override
+                                public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                                    Log.e(TAG, "onFailure to unlike: " + response, throwable);
                                 }
                             });
                         }
-
-                    }
-                });
-
-                ivComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, ComposeActivity.class);
-                        intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                        intent.putExtra("previousActivity", "DetailActivity");
-                        context.startActivity(intent);
                     }
                 });
             }
         }
     }
 
-    // Clean all elements of the recycler
+    // Clean all elements of the RecyclerView
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
     }
 
-    // Add a list of items
+    // Add a list of items to the RecyclerView
     public void addAll(List<Tweet> list) {
         tweets.addAll(list);
         notifyDataSetChanged();
     }
-
 }

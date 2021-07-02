@@ -62,7 +62,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-
             // Retrieve UI components
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
@@ -72,9 +71,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         @Override
         public void onClick(View view) {
+            // Get the position of the click
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
+                // Get the user that was clicked
                 User user = users.get(position);
+                // Create intent to pass user to user activity
                 Intent intent = new Intent(context, UserActivity.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 context.startActivity(intent);

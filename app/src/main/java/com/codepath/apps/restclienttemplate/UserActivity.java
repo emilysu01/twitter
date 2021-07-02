@@ -96,14 +96,12 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "onFailure to retrieve current user's Tweets: " + response, throwable);
-                Log.e(TAG, Integer.toString(statusCode));
-                Log.e(TAG, headers.toString());
             }
         });
     }
 
     private void setUIComponents() {
-        // Set TextView component text
+        // Set TextView components text
         tvName.setText(user.getName());
         tvScreenName.setText(user.getScreenName());
         tvBio.setText(user.getBio());
@@ -121,6 +119,7 @@ public class UserActivity extends AppCompatActivity {
         tvFollowing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Create intent to pass user to following activity
                 Intent intent = new Intent(getApplicationContext(), FollowingActivity.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 startActivity(intent);
@@ -129,6 +128,7 @@ public class UserActivity extends AppCompatActivity {
         tvFollowers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Create intent to pass user to followers activity
                 Intent intent = new Intent(getApplicationContext(), FollowersActivity.class);
                 intent.putExtra(User.class.getSimpleName(), Parcels.wrap(user));
                 startActivity(intent);

@@ -42,7 +42,6 @@ public class TwitterClient extends OAuthBaseClient {
 				null,  // OAuth2 scope, null for OAuth1
 				String.format(REST_CALLBACK_URL_TEMPLATE, context.getString(R.string.intent_host),
 						context.getString(R.string.intent_scheme), context.getPackageName(), FALLBACK_URL));
-		// this.max_id = max_id;
 	}
 
 	// Gets current user's profile
@@ -62,6 +61,7 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
+	// Gets user's timeline for infinite scroll
 	public void getRefreshedTimeline(long maxId, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();

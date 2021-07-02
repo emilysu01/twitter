@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 
 import com.codepath.apps.restclienttemplate.models.SampleModel;
 import com.codepath.apps.restclienttemplate.models.SampleModelDao;
@@ -16,8 +15,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
 	SampleModelDao sampleModelDao;
 
-	//
-	Button btnLogin;
+	public static final String TAG = "LoginActivity";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +33,6 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 				sampleModelDao.insertModel(sampleModel);
 			}
 		});
-
-		btnLogin = findViewById(R.id.btnLogin);
 	}
 
 
@@ -51,9 +47,9 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		Log.i("logtag", "login success");
+		Log.i(TAG, "Login success");
+		// Create intent to move to timeline activity
 		Intent intent = new Intent(this, TimelineActivity.class);
-		// intent.putExtra("previousActivity", user);
 		startActivity(intent);
 	}
 
@@ -61,6 +57,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// i.e Display an error dialog or toast
 	@Override
 	public void onLoginFailure(Exception e) {
+		Log.e(TAG, "Login failure");
 		e.printStackTrace();
 	}
 
