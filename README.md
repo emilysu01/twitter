@@ -2,7 +2,7 @@
 
 **Twitter** is an android app that allows a user to view their Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
-Time spent: **30** hours spent in total
+Time spent: **35** hours spent in total
 
 ## User Stories
 
@@ -29,7 +29,7 @@ The following **optional** features are implemented:
   * [x] User that wrote the original tweet is **automatically "@" replied in compose**
 * [x] User can tap a tweet to **open a detailed tweet view**
   * [x] User can **take favorite (and unfavorite) or retweet** actions on a tweet
-* [ ] User can view more tweets as they scroll with infinite pagination
+* [x] User can view more tweets as they scroll with infinite pagination
 * [ ] Compose tweet functionality is built using modal overlay
 * [x] User can **click a link within a tweet body** on tweet details view. The click will launch the web browser with relevant page opened.
 * [x] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.org/android/Drawables#vector-drawables) where appropriate.
@@ -40,7 +40,7 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] User can retweet and unretweet Tweets.
+* [x] User can reply, retweet, and like Tweets from both the timeline page and the details page.
 * [x] User can view a profile page with the user's personal information and Tweets for every user (linked from the timeline and Tweet details pages).
 
 ## Video Walkthrough
@@ -59,6 +59,7 @@ Learned:
 Challenges:
 - Wanted to display the user's profile picture on the compose Tweet screen but had no reference to a User object anywhere in the app at that point (no references to User objects are made in the login and timeline screens) - used an API call to retrieve the current user logged in and parsed it into a User object
 - Ran into issues with API call endpoints (all Twitter API call endpoints include .json)
+- Had a misunderstanding of max_id and infinite scrolling in a RecyclerView (was able to ask a TA to clarify)
 
 Resources referenced:
 - [Navigating back to a previous screen](https://stackoverflow.com/questions/4038479/android-go-back-to-previous-activity)
