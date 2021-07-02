@@ -109,7 +109,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!tweet.isRetweeted()) {
-                    client.retweet(tweet.getId(), new JsonHttpResponseHandler() {
+                    client.retweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, JSON json) {
                             Log.i(TAG, "onSuccess to retweet");
@@ -123,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    client.unretweet(tweet.getId(), new JsonHttpResponseHandler() {
+                    client.unretweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, JSON json) {
                             Log.i(TAG, "onSuccess to unretweet");
@@ -143,7 +143,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (tweet.isLiked()) {
-                    client.unlikeTweet(tweet.getId(), new JsonHttpResponseHandler() {
+                    client.unlikeTweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, JSON json) {
                             Log.i(TAG, "onSuccess to unlike Tweet");
@@ -157,7 +157,7 @@ public class DetailActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    client.likeTweet(tweet.getId(), new JsonHttpResponseHandler() {
+                    client.likeTweet(tweet.getId() + "", new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, JSON json) {
                             Log.i(TAG, "onSuccess to like Tweet");

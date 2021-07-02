@@ -13,7 +13,7 @@ import java.util.List;
 @Parcel
 public class Tweet {
 
-    public String id;
+    public long id;
     public User user;
     public String body;
     public String mediaUrl;
@@ -31,7 +31,7 @@ public class Tweet {
         Tweet tweet = new Tweet();
 
         // Fill in attributes of new Tweet object
-        tweet.id = jsonObject.getString("id_str");
+        tweet.id = jsonObject.getLong("id");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         if(jsonObject.has("full_text")) {
             tweet.body = jsonObject.getString("full_text");
@@ -68,7 +68,7 @@ public class Tweet {
     }
 
     // Getter and setter methods
-    public String getId() {
+    public long getId() {
         return id;
     }
 

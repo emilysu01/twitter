@@ -47,7 +47,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     User user;
 
-    public int lowestMaxId;
+    public long max_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +98,18 @@ public class TimelineActivity extends AppCompatActivity {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
 
-
-        client.getHomeTimeline(lowestMaxId, new JsonHttpResponseHandler() {
+        Log.i("TimelineActivity", max_id + "");
+        client.getRefreshedTimeline(max_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i("TimelineActivity", "onSuccess");
+                Log.i("TimelineActivity", "+25");
+                Log.i("TimelineActivity", json.toString());
+
                 JSONArray jsonArray = json.jsonArray;
                 try {
-                    tweets.addAll(0, Tweet.fromJsonArray(jsonArray));
+                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyDataSetChanged();
+                    max_id = tweets.get(tweets.size() - 1).getId();
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                     e.printStackTrace();
@@ -126,7 +130,7 @@ public class TimelineActivity extends AppCompatActivity {
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
-        client.getHomeTimeline(lowestMaxId, new JsonHttpResponseHandler() {
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 // Remember to CLEAR OUT old items before appending in the new ones
@@ -178,13 +182,6 @@ public class TimelineActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             // Unwrap Tweet from previous activity intent
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
-            if (lowestMaxId == 0) {
-                lowestMaxId = Integer.parseInt(tweet.getId());
-            } else {
-                if (Integer.parseInt(tweet.getId()) < lowestMaxId) {
-                    lowestMaxId = Integer.parseInt(tweet.getId());
-                }
-            }
             // Update the RecyclerView with the Tweet by modifying data source, notifying adapter, and scrolling to top
             tweets.add(0, tweet);
             adapter.notifyItemInserted(0);
@@ -195,13 +192,14 @@ public class TimelineActivity extends AppCompatActivity {
 
     private void populateHomeTimeline() {
         // Retrieve current user's timeline
-        client.getHomeTimeline(lowestMaxId, new JsonHttpResponseHandler() {
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     // Add to list of Tweets to display
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    max_id = tweets.get(tweets.size() - 1).getId();
                     // Notify adapter
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "onSuccess to retrieve current user's timeline");
